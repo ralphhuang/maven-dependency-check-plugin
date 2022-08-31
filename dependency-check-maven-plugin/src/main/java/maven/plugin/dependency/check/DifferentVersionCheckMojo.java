@@ -49,9 +49,7 @@ public class DifferentVersionCheckMojo extends AbstractDependencyCheckMojo {
             sb.append("\n\r");
             nodeMap.forEach((key, value) -> {
                 sb.append("--> \t").append(key).append("\n\r");
-                value.forEach(node -> {
-                    sb.append("---->\t").append(node.getArtifact().toString()).append("\n\r");
-                });
+                value.forEach(node -> sb.append("---->\t").append(node.getArtifact().toString()).append("\n\r"));
             });
             sb.append("------------------------------------------------------------------------------");
             log.info(sb.toString());
