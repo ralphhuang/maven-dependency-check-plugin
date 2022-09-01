@@ -50,7 +50,8 @@
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <goal>dc</goal>
+                            <goal>snapshot</goal>
+                            <goal>version</goal>
                         </goals>
                     </execution>
                 </executions>

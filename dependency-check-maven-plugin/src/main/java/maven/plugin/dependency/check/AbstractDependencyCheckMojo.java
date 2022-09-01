@@ -10,8 +10,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingRequest;
-import org.apache.maven.shared.dependency.graph.DependencyCollectorBuilder;
-import org.apache.maven.shared.dependency.graph.DependencyCollectorBuilderException;
+import org.apache.maven.shared.dependency.graph.DependencyGraphBuilder;
+import org.apache.maven.shared.dependency.graph.DependencyGraphBuilderException;
 import org.apache.maven.shared.dependency.graph.DependencyNode;
 import org.apache.maven.shared.dependency.graph.traversal.BuildingDependencyNodeVisitor;
 import org.apache.maven.shared.dependency.graph.traversal.DependencyNodeVisitor;
@@ -27,8 +27,11 @@ public abstract class AbstractDependencyCheckMojo extends AbstractMojo {
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
     protected MavenSession session;
 
+    /**
+     * The dependency graph builder to use.
+     */
     @Component(hint = "default")
-    protected DependencyCollectorBuilder dependencyCollectorBuilder;
+    private DependencyGraphBuilder dependencyGraphBuilder;
 
     /**
      * when set in pom.xml,plugin will be skip
@@ -71,7 +74,9 @@ public abstract class AbstractDependencyCheckMojo extends AbstractMojo {
             buildingRequest.setProject(project);
 
             //build DependencyRootNode
-            DependencyNode rootNode = dependencyCollectorBuilder.collectDependencyGraph(buildingRequest, null);
+            // non-verbose mode use dependency graph component, which gives consistent results with Maven version
+            // running
+            DependencyNode rootNode = dependencyGraphBuilder.buildDependencyGraph(buildingRequest, null);
 
             log.info(addLogPrefix("printTree: " + printTree));
             if (printTree) {
@@ -81,7 +86,7 @@ public abstract class AbstractDependencyCheckMojo extends AbstractMojo {
 
             return rootNode;
 
-        } catch (DependencyCollectorBuilderException e) {
+        } catch (DependencyGraphBuilderException e) {
             // should not happen
             log.error(addLogPrefix("buildDependencyRootNode error"), e);
             throw new MojoExecutionException(addLogPrefix("buildDependencyRootNode error"), e);

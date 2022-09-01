@@ -31,14 +31,11 @@ public class SnapshotCheckMojo extends AbstractDependencyCheckMojo {
         }
 
         //check SNAPSHOT dependencies
+        //sort and remove duplicate
         List<DependencyNode> snapShotsNodes = new ArrayList<>(findSubSnapshot(rootNode));
 
-        //sort and remove duplicate
-        Set<DependencyNode> snapShotsNodeSet = new TreeSet<>(DependencyNodeComparator.singleton());
-        snapShotsNodeSet.addAll(snapShotsNodes);
-
         //print to console
-        if (snapShotsNodeSet.isEmpty()) {
+        if (snapShotsNodes.isEmpty()) {
             log.info(addLogPrefix("no SNAPSHOT dependency found:"));
         } else {
             log.error(addLogPrefix("SNAPSHOT dependencies found blow:"));
@@ -47,7 +44,7 @@ public class SnapshotCheckMojo extends AbstractDependencyCheckMojo {
             sb.append("\n\r");
             sb.append("------------------------------------------------------------------------------");
             sb.append("\n\r");
-            snapShotsNodeSet.forEach(c -> sb.append("-->\t").append(c.getArtifact().toString()).append("\n\r"));
+            snapShotsNodes.forEach(c -> sb.append("-->\t").append(c.getArtifact().toString()).append("\n\r"));
             sb.append("------------------------------------------------------------------------------");
             log.info(sb.toString());
 
@@ -59,7 +56,7 @@ public class SnapshotCheckMojo extends AbstractDependencyCheckMojo {
 
     private Set<DependencyNode> findSubSnapshot(DependencyNode node) {
 
-        Set<DependencyNode> set = new HashSet<>();
+        Set<DependencyNode> set = new TreeSet<>(DependencyNodeComparator.singleton());
 
         //skip when the module it's self is SNAPSHOT version
         if (node.getParent() != null && node.getArtifact().getBaseVersion().endsWith(SNAPSHOT)) {

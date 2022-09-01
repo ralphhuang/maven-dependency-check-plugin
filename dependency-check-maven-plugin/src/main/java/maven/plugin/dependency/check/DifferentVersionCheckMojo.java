@@ -12,8 +12,10 @@ import java.util.*;
 
 /**
  * check whether exist that one dependency has different versions and print dependency tree
+ * @deprecated it's not work while maven solve this by default.
  */
-@Mojo(name = "version", requiresDependencyCollection = ResolutionScope.TEST, threadSafe = true)
+@Deprecated
+//@Mojo(name = "version", requiresDependencyCollection = ResolutionScope.TEST, threadSafe = true)
 public class DifferentVersionCheckMojo extends AbstractDependencyCheckMojo {
 
 
@@ -30,7 +32,7 @@ public class DifferentVersionCheckMojo extends AbstractDependencyCheckMojo {
         }
 
         //check
-        Map<String, Set<DependencyNode>> map = new HashMap<>();
+        Map<String, Set<DependencyNode>> map = new TreeMap<>();
         findDifferentVersions(rootNode, map);
 
         //remove from map which has only one version and get a new Map after filter
@@ -66,7 +68,7 @@ public class DifferentVersionCheckMojo extends AbstractDependencyCheckMojo {
             return map;
         }
 
-        Map<String, Set<DependencyNode>> copy = new HashMap<>();
+        Map<String, Set<DependencyNode>> copy = new TreeMap<>();
 
         map.forEach((key, value) -> {
             if (value != null && value.size() > 1) {
@@ -81,7 +83,7 @@ public class DifferentVersionCheckMojo extends AbstractDependencyCheckMojo {
 
         List<DependencyNode> children = node.getChildren();
 
-        if (children != null) {
+        if (children != null && children.size() > 0) {
             children.forEach(child -> {
 
                 //current node
