@@ -51,7 +51,7 @@ public abstract class AbstractDependencyCheckMojo extends AbstractMojo {
      * maven.dependency.check.printTree = false
      */
     @Parameter(name = "printTree", defaultValue = "${maven.dependency.check.printTree}")
-    protected boolean printTree;
+    protected boolean printTree = true;
 
     /**
      * plugin-name-display
