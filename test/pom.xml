@@ -51,7 +51,6 @@
                         <phase>package</phase>
                         <goals>
                             <goal>snapshot</goal>
-                            <goal>version</goal>
                         </goals>
                     </execution>
                 </executions>
